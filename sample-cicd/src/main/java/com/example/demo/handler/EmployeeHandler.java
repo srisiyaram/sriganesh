@@ -11,6 +11,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 import com.example.demo.dto.EmployeeDTO;
 import com.example.demo.mongo.doc.Employee;
+import com.example.demo.mongo.helper.ExampleBuilder;
 import com.example.demo.mongo.repo.EmployeeMongoRepository;
 
 import reactor.core.publisher.Mono;
@@ -32,19 +33,21 @@ public class EmployeeHandler {
 						EmployeeDTO.class));
 	}
 
-	/**
-	 * Not Working
-	 * 
-	 * @param serverRequest
-	 * @return
-	 */
-	public Mono<ServerResponse> findByDTO(ServerRequest serverRequest) {
-		return serverRequest.bodyToMono(EmployeeDTO.class).map(this::toDoc)
-				.map(empDoc -> Example.<Employee>of(empDoc,
-						ExampleMatcher.matchingAny().withIgnoreNullValues().withIgnoreCase()
-								.withStringMatcher(StringMatcher.CONTAINING)))
-				.flatMap(ex -> ServerResponse.ok().body(employeeMongoRepository.findBy(ex).map(this::toDTO),
-						EmployeeDTO.class));
+	public Mono<ServerResponse> findByCriteriaContainingAny(ServerRequest serverRequest) {
+		return serverRequest.bodyToMono(EmployeeDTO.class).map(this::toDoc).map(ExampleBuilder::containingAny).flatMap(
+				ex -> ServerResponse.ok().body(employeeMongoRepository.findBy(ex).map(this::toDTO), EmployeeDTO.class));
+	}
+
+	public Mono<ServerResponse> findByCriteriaContainingAll(ServerRequest serverRequest) {
+		return serverRequest.bodyToMono(EmployeeDTO.class).map(this::toDoc).map(ExampleBuilder::containingAll).flatMap(
+				ex -> ServerResponse.ok().body(employeeMongoRepository.findBy(ex).map(this::toDTO), EmployeeDTO.class));
+	}
+
+	public Mono<ServerResponse> save(ServerRequest serverRequest) {
+//		return serverRequest.bodyToMono(EmployeeDTO.class).map(this::toDoc).map(employeeMongoRepository::save)
+//				.flatMap(doc -> ServerResponse.ok().body(doc.map(this::toDTO), EmployeeDTO.class));
+		return ServerResponse.ok().body(serverRequest.bodyToMono(EmployeeDTO.class).map(this::toDoc)
+				.flatMap(employeeMongoRepository::save).map(this::toDTO), EmployeeDTO.class);
 	}
 
 	private EmployeeDTO toDTO(Employee empDoc) {

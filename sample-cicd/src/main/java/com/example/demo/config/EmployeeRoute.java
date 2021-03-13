@@ -18,9 +18,13 @@ public class EmployeeRoute {
 	public RouterFunction<ServerResponse> empRoute(@Autowired EmployeeHandler employeeHandler) {
 		return RouterFunctions.route()
 				.GET("/emp/all", RequestPredicates.accept(MediaType.APPLICATION_JSON), employeeHandler::findAll)
-				.GET("/emp/{empId}", RequestPredicates.accept(MediaType.APPLICATION_JSON), employeeHandler::findByEmpId)
-				.POST("/emp/dto", RequestPredicates.accept(MediaType.APPLICATION_JSON), employeeHandler::findByDTO)
-				.build();
+				.GET("/emp/by/empId/{empId}", RequestPredicates.accept(MediaType.APPLICATION_JSON),
+						employeeHandler::findByEmpId)
+				.POST("/emp/by/criteria/containing/any", RequestPredicates.accept(MediaType.APPLICATION_JSON),
+						employeeHandler::findByCriteriaContainingAny)
+				.POST("/emp/by/criteria/containing/all", RequestPredicates.accept(MediaType.APPLICATION_JSON),
+						employeeHandler::findByCriteriaContainingAll)
+				.POST("/emp/save", RequestPredicates.accept(MediaType.APPLICATION_JSON), employeeHandler::save).build();
 	}
 
 }

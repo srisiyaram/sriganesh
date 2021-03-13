@@ -1,4 +1,4 @@
-package com.example.demo.function.handler;
+package com.example.demo.handler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -39,11 +39,11 @@ public class EmployeeHandler {
 	 * @return
 	 */
 	public Mono<ServerResponse> findByDTO(ServerRequest serverRequest) {
-		return serverRequest.bodyToMono(EmployeeDTO.class).map(this::toDoc).log()
+		return serverRequest.bodyToMono(EmployeeDTO.class).map(this::toDoc)
 				.map(empDoc -> Example.<Employee>of(empDoc,
 						ExampleMatcher.matchingAny().withIgnoreNullValues().withIgnoreCase()
 								.withStringMatcher(StringMatcher.CONTAINING)))
-				.log().flatMap(ex -> ServerResponse.ok().body(employeeMongoRepository.findOne(ex).map(this::toDTO),
+				.flatMap(ex -> ServerResponse.ok().body(employeeMongoRepository.findBy(ex).map(this::toDTO),
 						EmployeeDTO.class));
 	}
 

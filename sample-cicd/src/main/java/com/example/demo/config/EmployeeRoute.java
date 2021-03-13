@@ -9,7 +9,7 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
-import com.example.demo.function.handler.EmployeeHandler;
+import com.example.demo.handler.EmployeeHandler;
 
 @Configuration
 public class EmployeeRoute {

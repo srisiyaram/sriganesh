@@ -24,7 +24,9 @@ public class EmployeeRoute {
 						employeeHandler::findByCriteriaContainingAny)
 				.POST("/emp/by/criteria/containing/all", RequestPredicates.accept(MediaType.APPLICATION_JSON),
 						employeeHandler::findByCriteriaContainingAll)
-				.POST("/emp/save", RequestPredicates.accept(MediaType.APPLICATION_JSON), employeeHandler::save).build();
+				.POST("/emp/save", RequestPredicates.accept(MediaType.APPLICATION_JSON), employeeHandler::save)
+				.POST("/emp/delete", RequestPredicates.accept(MediaType.APPLICATION_JSON), employeeHandler::delete)
+				.build();
 	}
 
 }

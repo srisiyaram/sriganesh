@@ -16,7 +16,14 @@ import lombok.NoArgsConstructor;
 public class Employee {
 
 	@Id
-	private String id;
-	private Integer empId;
-	private String empName;
+	private EmployeeKey employeeKey;
+
+	@AllArgsConstructor
+	@Builder
+	@Data
+	@NoArgsConstructor
+	public static class EmployeeKey {
+		private Integer empId;
+		private String empName;
+	}
 }

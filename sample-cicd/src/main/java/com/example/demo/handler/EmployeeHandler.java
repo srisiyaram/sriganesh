@@ -8,8 +8,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 import com.example.demo.dto.EmployeeDTO;
 import com.example.demo.mongo.doc.Employee;
-import com.example.demo.mongo.doc.Employee.EmployeeKey;
-import com.example.demo.mongo.helper.ExampleBuilder;
+import com.example.demo.mongo.doc.EmployeeInfo;
 import com.example.demo.mongo.repo.EmployeeMongoRepository;
 
 import reactor.core.publisher.Mono;
@@ -27,17 +26,21 @@ public class EmployeeHandler {
 
 	public Mono<ServerResponse> findByEmpId(ServerRequest serverRequest) {
 		return ServerResponse.ok().body(Mono.justOrEmpty(serverRequest.pathVariable("empId")).map(Integer::parseInt)
-				.flatMap(employeeMongoRepository::findByEmployeeKeyEmpId).map(this::toDTO), EmployeeDTO.class);
+				.log().flatMap(employeeMongoRepository::findByEmpInfoEmpId).map(this::toDTO), EmployeeDTO.class);
 	}
 
 	public Mono<ServerResponse> findByCriteriaContainingAny(ServerRequest serverRequest) {
-		return serverRequest.bodyToMono(EmployeeDTO.class).map(this::toDoc).map(ExampleBuilder::containingAny).flatMap(
-				ex -> ServerResponse.ok().body(employeeMongoRepository.findBy(ex).map(this::toDTO), EmployeeDTO.class));
+		return serverRequest.bodyToMono(EmployeeDTO.class).map(this::toDoc).log()
+//				.map(ExampleBuilder::containingAny)
+				.flatMap(ex -> ServerResponse.ok().body(
+						employeeMongoRepository.findOneByEmpInfo(ex.getEmpInfo()).map(this::toDTO), EmployeeDTO.class));
 	}
 
 	public Mono<ServerResponse> findByCriteriaContainingAll(ServerRequest serverRequest) {
-		return serverRequest.bodyToMono(EmployeeDTO.class).map(this::toDoc).map(ExampleBuilder::containingAll).flatMap(
-				ex -> ServerResponse.ok().body(employeeMongoRepository.findBy(ex).map(this::toDTO), EmployeeDTO.class));
+		return serverRequest.bodyToMono(EmployeeDTO.class).map(this::toDoc).log()
+//				.map(ExampleBuilder::containingAll)
+				.flatMap(ex -> ServerResponse.ok().body(
+						employeeMongoRepository.findOneByEmpInfo(ex.getEmpInfo()).map(this::toDTO), EmployeeDTO.class));
 	}
 
 	public Mono<ServerResponse> save(ServerRequest serverRequest) {
@@ -51,15 +54,18 @@ public class EmployeeHandler {
 				Void.class);
 	}
 
+	public Mono<ServerResponse> deleteAll(ServerRequest serverRequest) {
+		return ServerResponse.ok().body(employeeMongoRepository.deleteAll(), Void.class);
+	}
+
 	private EmployeeDTO toDTO(Employee empDoc) {
-		return EmployeeDTO.builder().empId(empDoc.getEmployeeKey().getEmpId())
-				.empName(empDoc.getEmployeeKey().getEmpName()).build();
+		return EmployeeDTO.builder().id(empDoc.getId()).empId(empDoc.getEmpInfo().getEmpId())
+				.empName(empDoc.getEmpInfo().getEmpName()).build();
 	}
 
 	private Employee toDoc(EmployeeDTO empDTO) {
-		return Employee.builder()
-				.employeeKey(EmployeeKey.builder().empId(empDTO.getEmpId()).empName(empDTO.getEmpName()).build())
-				.build();
+		return Employee.builder().id(empDTO.getId())
+				.empInfo(EmployeeInfo.builder().empId(empDTO.getEmpId()).empName(empDTO.getEmpName()).build()).build();
 	}
 
 }

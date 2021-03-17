@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Builder.Default;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,14 +17,8 @@ import lombok.NoArgsConstructor;
 public class Employee {
 
 	@Id
-	private EmployeeKey employeeKey;
+	private String id;
+	@Default
+	private EmployeeInfo empInfo = EmployeeInfo.builder().build();
 
-	@AllArgsConstructor
-	@Builder
-	@Data
-	@NoArgsConstructor
-	public static class EmployeeKey {
-		private Integer empId;
-		private String empName;
-	}
 }

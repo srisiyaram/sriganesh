@@ -17,16 +17,17 @@ public class EmployeeRoute {
 	@Bean
 	public RouterFunction<ServerResponse> empRoute(@Autowired EmployeeHandler employeeHandler) {
 		return RouterFunctions.route()
-				.GET("/emp/all", RequestPredicates.accept(MediaType.APPLICATION_JSON), employeeHandler::findAll)
-				.GET("/emp/by/empId/{empId}", RequestPredicates.accept(MediaType.APPLICATION_JSON),
+				.GET("/employee/find/all", RequestPredicates.accept(MediaType.APPLICATION_JSON),
+						employeeHandler::findAll)
+				.GET("/employee/find/by/empId/{empId}", RequestPredicates.accept(MediaType.APPLICATION_JSON),
 						employeeHandler::findByEmpId)
-				.POST("/emp/by/criteria/containing/any", RequestPredicates.accept(MediaType.APPLICATION_JSON),
-						employeeHandler::findByCriteriaContainingAny)
-				.POST("/emp/by/criteria/containing/all", RequestPredicates.accept(MediaType.APPLICATION_JSON),
-						employeeHandler::findByCriteriaContainingAll)
-				.POST("/emp/save", RequestPredicates.accept(MediaType.APPLICATION_JSON), employeeHandler::save)
-				.POST("/emp/delete", RequestPredicates.accept(MediaType.APPLICATION_JSON), employeeHandler::delete)
-				.POST("/emp/delete/all", RequestPredicates.accept(MediaType.APPLICATION_JSON),
+				.POST("/employee/find/one/by/criteria/", RequestPredicates.accept(MediaType.APPLICATION_JSON),
+						employeeHandler::findOneByCriteria)
+				.POST("/employee/find/all/by/criteria/", RequestPredicates.accept(MediaType.APPLICATION_JSON),
+						employeeHandler::findAllByCriteria)
+				.POST("/employee/upsert", RequestPredicates.accept(MediaType.APPLICATION_JSON), employeeHandler::save)
+				.POST("/employee/delete", RequestPredicates.accept(MediaType.APPLICATION_JSON), employeeHandler::delete)
+				.POST("/employee/delete/all", RequestPredicates.accept(MediaType.APPLICATION_JSON),
 						employeeHandler::deleteAll)
 				.build();
 	}

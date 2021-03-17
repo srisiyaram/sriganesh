@@ -26,21 +26,20 @@ public class EmployeeHandler {
 
 	public Mono<ServerResponse> findByEmpId(ServerRequest serverRequest) {
 		return ServerResponse.ok().body(Mono.justOrEmpty(serverRequest.pathVariable("empId")).map(Integer::parseInt)
-				.log().flatMap(employeeMongoRepository::findByEmpInfoEmpId).map(this::toDTO), EmployeeDTO.class);
+				.flatMap(employeeMongoRepository::findByEmpInfoEmpId).map(this::toDTO), EmployeeDTO.class);
 	}
 
-	public Mono<ServerResponse> findByCriteriaContainingAny(ServerRequest serverRequest) {
-		return serverRequest.bodyToMono(EmployeeDTO.class).map(this::toDoc).log()
-//				.map(ExampleBuilder::containingAny)
-				.flatMap(ex -> ServerResponse.ok().body(
-						employeeMongoRepository.findOneByEmpInfo(ex.getEmpInfo()).map(this::toDTO), EmployeeDTO.class));
+	public Mono<ServerResponse> findOneByCriteria(ServerRequest serverRequest) {
+		return serverRequest.bodyToMono(EmployeeDTO.class).map(this::toDoc).flatMap(ex -> ServerResponse.ok()
+				.body(employeeMongoRepository.findOneByEmpInfo(ex.getEmpInfo()).map(this::toDTO), EmployeeDTO.class));
 	}
 
-	public Mono<ServerResponse> findByCriteriaContainingAll(ServerRequest serverRequest) {
-		return serverRequest.bodyToMono(EmployeeDTO.class).map(this::toDoc).log()
-//				.map(ExampleBuilder::containingAll)
-				.flatMap(ex -> ServerResponse.ok().body(
-						employeeMongoRepository.findOneByEmpInfo(ex.getEmpInfo()).map(this::toDTO), EmployeeDTO.class));
+	public Mono<ServerResponse> findAllByCriteria(ServerRequest serverRequest) {
+		return ServerResponse
+				.ok().body(
+						serverRequest.bodyToMono(EmployeeDTO.class).map(this::toDoc).map(Employee::getEmpInfo)
+								.flatMapMany(employeeMongoRepository::findAllByEmpInfo).map(this::toDTO),
+						EmployeeDTO.class);
 	}
 
 	public Mono<ServerResponse> save(ServerRequest serverRequest) {

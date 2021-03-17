@@ -1,5 +1,7 @@
 package com.example.demo.mongo.doc;
 
+import java.io.Serializable;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -14,7 +16,9 @@ import lombok.NoArgsConstructor;
 @Data
 @Document
 @NoArgsConstructor
-public class Employee {
+public class Employee implements Serializable {
+
+	private static final long serialVersionUID = -4821713774265073276L;
 
 	@Id
 	private String id;

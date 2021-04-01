@@ -17,4 +17,6 @@ public interface EmployeeMongoRepository extends ReactiveMongoRepository<Employe
 	Mono<Employee> findOneByEmpInfo(EmployeeInfo employeeInfo);
 
 	Flux<Employee> findAllByEmpInfo(EmployeeInfo employeeInfo);
+
+	Flux<Employee> findAllByEmpInfoIn(Flux<EmployeeInfo> employeeInfos);
 }

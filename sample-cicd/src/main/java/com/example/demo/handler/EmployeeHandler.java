@@ -11,9 +11,11 @@ import com.example.demo.mongo.doc.Employee;
 import com.example.demo.mongo.doc.EmployeeInfo;
 import com.example.demo.mongo.repo.EmployeeMongoRepository;
 
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
 
 @Component
+@Slf4j
 public class EmployeeHandler {
 
 	@Autowired
@@ -67,4 +69,11 @@ public class EmployeeHandler {
 				.empInfo(EmployeeInfo.builder().empId(empDTO.getEmpId()).empName(empDTO.getEmpName()).build()).build();
 	}
 
+	private void just() {
+//	Flux.just(1, 2, 0, 4, 5, 7, 9).map(i -> 579 / i)
+//	.onErrorContinue((t, o) -> log.error("Ex - {}, Obj - {}", t.getMessage(), o))
+//	.onErrorReturn(-1).doOnNext(s -> log.info("Element - {}", s))
+//	.onErrorResume(t -> Mono.just(-1)).doOnNext(s -> log.info("Element - {}", s))
+//	.subscribe();
+	}
 }
